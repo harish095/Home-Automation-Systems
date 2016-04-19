@@ -1,0 +1,9 @@
+{
+  "name": "Home-Automation-Systems",
+  "version": "0.0.1",
+  "description": "An IOT based project which controls the devices through a web application.",
+  "dependencies": {
+    "firebase": "^2.4.2",
+    "johnny-five": "latest"
+  }
+}

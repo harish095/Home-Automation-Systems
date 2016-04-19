@@ -1,0 +1,56 @@
+{
+  "devices" : {
+    "led1" : {
+      "brightness" : 255,
+      "guests" : {
+        "guest1" : true
+      },
+      "owner" : "harish095",
+      "status" : false
+    },
+    "led2" : {
+      "brightness" : 255,
+      "guests" : {
+        "guest2" : true
+      },
+      "owner" : "harish095",
+      "status" : false
+    }
+  },
+  "guests" : {
+    "guest1" : {
+      "active" : true,
+      "devices" : {
+        "led1" : true
+      },
+      "expiry" : 1461076344,
+      "name" : "Manoj Kumar",
+      "owner" : "harish095",
+      "password" : "password123"
+    },
+    "guest2" : {
+      "active" : true,
+      "devices" : {
+        "led2" : true
+      },
+      "expiry" : 1461046265,
+      "name" : "Vinod Kumar",
+      "owner" : "harish095",
+      "password" : "password345"
+    }
+  },
+  "owners" : {
+    "harish095" : {
+      "devices" : {
+        "led1" : true,
+        "led2" : true
+      },
+      "guests" : {
+        "guest1" : true,
+        "guest2" : true
+      },
+      "name" : "Harish Kandala",
+      "password" : "kandala123"
+    }
+  }
+}
