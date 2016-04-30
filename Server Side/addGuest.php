@@ -72,6 +72,11 @@
                 <label for="password">Password</label>
             </div>
             <div class="input-field">
+                <i class="mdi-action-account-box prefix"></i>
+                <input type="text" name="fullname" id="fullname"/>
+                <label for="fullname">Full Name</label>
+            </div>
+            <div class="input-field">
                 <i class="mdi-device-access-time prefix"></i>
                 <input type="text" name="expiry" id="expiry"/>
                 <label for="expiry">Expiry Time (in hours)</label>
@@ -98,7 +103,9 @@
     function addGuest() {
         var username = $("#username").val();
         var password = $("#password").val();
+        var fullname = $("#fullname").val();
         var expiry = $("#expiry").val();
+        var devices = {};
         var flag = 1;
         if(username == "") {
             flag = 0;
@@ -117,6 +124,10 @@
             flag = 0;
             Materialize.toast("Enter password of guest", 3000);
         }
+        if(fullname == "") {
+            flag = 0;
+            Materialize.toast("Enter the full name of guest", 3000);
+        }
         if(!$.isNumeric(expiry)) {
             flag = 0;
             Materialize.toast("Enter valid expiry time", 3000);
@@ -124,7 +135,62 @@
 
         expiry = Math.floor(new Date() / 1000) + (expiry*60*60);
 
-        console.log(expiry);
+        if(flag) {
+            flag = 1;
+
+            $(".device-item").each(function(index, item) {
+                var input = $(item).find("input");
+                var device = input.attr("id");
+                var checked = input.is(":checked");
+
+                if(checked) {
+                    var deviceData = new Firebase("https://home-automation-system.firebaseio.com/devices/" + device + "/guests");
+                    var jsonData = {};
+                    jsonData[username] = true;
+                    deviceData.update(jsonData, function (error) {
+                        if(error) {
+                            flag = 0;
+                            Materialize.toast("Something wrong happened", 3000);
+                        }
+                    });
+
+                    devices[device] = true;
+                }
+            });
+
+            var ownerData = new Firebase("https://home-automation-system.firebaseio.com/owners/<?php echo $_SESSION['username'] ?>/guests");
+            var jsonData = {};
+            jsonData[username] = true;
+            ownerData.update(jsonData, function (error) {
+                if(error) {
+                    flag = 0;
+                    Materialize.toast("Something wrong happened", 3000);
+                }
+            });
+
+            var guestsData = new Firebase("https://home-automation-system.firebaseio.com/guests/");
+            var guestData = {};
+            guestData[username] = {};
+            guestData[username].active = true;
+            guestData[username].expiry = expiry;
+            guestData[username].name = fullname;
+            guestData[username].owner = "<?php echo $_SESSION['username'] ?>";
+            guestData[username].password = password;
+            guestData[username].devices = devices;
+            guestsData.update(guestData, function (error) {
+                if(error) {
+                    flag = 0;
+                    Materialize.toast("Something wrong happened", 3000);
+                }
+            });
+
+            guestRef.off("value");
+
+            if(flag) {
+                Materialize.toast("Guest successfully added", 3000);
+                $("#addGuest-form")[0].reset();
+            }
+        }
     }
 
     $("#addGuest-form").submit(
